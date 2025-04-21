@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        git 'https://github.com/your-org/your-repo.git'
+        git 'https://github.com/arunnc56/phase3-jenkins-CICD.git'
       }
     }
 
