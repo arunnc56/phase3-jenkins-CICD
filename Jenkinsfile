@@ -4,7 +4,7 @@ pipeline {
   environment {
     AWS_REGION = 'us-east-1'          // Example: us-east-1
     S3_BUCKET = 'my-bucket-phase2'       // Example: my-jenkins-builds
-    S3_KEY = 'phase3-jenkins-CICD/build.zip' // Path inside the bucket
+    S3_KEY = 'build.zip' // Path inside the bucket
     APPLICATION_NAME = 'Jenkins-App' // Example: MyCodeDeployApp
     DEPLOYMENT_GROUP = 'Phase3-Jenkins-group' // Example: MyDeploymentGroup
   }
