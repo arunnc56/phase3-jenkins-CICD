@@ -35,8 +35,7 @@ pipeline {
         echo '📦 Packaging build and appspec.yml...'
         sh '''
           mkdir -p deploy
-          cp -r target deploy/
-          cp target/*.jar deploy/
+          cp -r target deploy/              # Include full target/ folder
           cp appspec.yml deploy/
           cp deploy.sh deploy/
           cd deploy
