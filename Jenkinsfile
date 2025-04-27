@@ -2,11 +2,11 @@ pipeline {
   agent any
 
   environment {
-    AWS_REGION = 'us-east-1'          // Example: us-east-1
-    S3_BUCKET = 'my-bucket-phase2'       // Example: my-jenkins-builds
-    S3_KEY = 'build.zip' // Path inside the bucket
-    APPLICATION_NAME = 'Jenkins-App' // Example: MyCodeDeployApp
-    DEPLOYMENT_GROUP = 'Phase3-Jenkins-group' // Example: MyDeploymentGroup
+    AWS_REGION = 'us-east-1'
+    S3_BUCKET = 'my-bucket-phase2'
+    S3_KEY = 'build.zip'
+    APPLICATION_NAME = 'Jenkins-App'
+    DEPLOYMENT_GROUP = 'Phase3-Jenkins-group'
   }
 
   stages {
@@ -47,20 +47,24 @@ pipeline {
     stage('Upload to S3') {
       steps {
         echo '☁️ Uploading build to S3...'
-        sh 'aws s3 cp deploy/build.zip s3://$S3_BUCKET/$S3_KEY --region $AWS_REGION'
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my-aws-creds']]) {
+          sh 'aws s3 cp deploy/build.zip s3://$S3_BUCKET/$S3_KEY --region $AWS_REGION'
+        }
       }
     }
 
     stage('Trigger Deployment') {
       steps {
         echo '🚀 Triggering CodeDeploy Deployment...'
-        sh '''
-          aws deploy create-deployment \
-            --application-name $APPLICATION_NAME \
-            --deployment-group-name $DEPLOYMENT_GROUP \
-            --s3-location bucket=$S3_BUCKET,key=$S3_KEY,bundleType=zip \
-            --region $AWS_REGION
-        '''
+        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'my-aws-creds']]) {
+          sh '''
+            aws deploy create-deployment \
+              --application-name $APPLICATION_NAME \
+              --deployment-group-name $DEPLOYMENT_GROUP \
+              --s3-location bucket=$S3_BUCKET,key=$S3_KEY,bundleType=zip \
+              --region $AWS_REGION
+          '''
+        }
       }
     }
   }
